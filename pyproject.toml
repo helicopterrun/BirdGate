@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "birdgate"
+version = "0.1.0"
+description = "Audio gating and filtering for BirdNET"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Christopher", email = "chris@example.com"}
+]
+keywords = ["birdnet", "audio", "bird", "detection", "rtsp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Scientific/Engineering",
+]
+
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "soundfile>=0.12.0",
+    "requests>=2.28.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.0.270",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+birdgate = "birdgate.scripts.run_birdgate:main"
+birdgate-inspect = "birdgate.scripts.inspect_logs:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/birdgate"
+Documentation = "https://github.com/yourusername/birdgate#readme"
+Repository = "https://github.com/yourusername/birdgate.git"
+Issues = "https://github.com/yourusername/birdgate/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["birdgate*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --cov=birdgate --cov-report=term-missing"

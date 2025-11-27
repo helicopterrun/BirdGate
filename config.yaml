@@ -1,0 +1,77 @@
+# BirdGate Configuration
+# ----------------------
+# This file configures BirdGate to ingest audio from RTSP streams,
+# apply audio gating, and send candidate windows to BirdNET.
+
+# Unique identifier for this monitoring site
+site_id: "rooftop-ballard"
+
+# Audio streams to monitor
+streams:
+  - name: "north-mic"
+    url: "rtsp://localhost:8554/birdmic-north"
+    sample_rate: 48000
+    window_size_seconds: 5.0
+    channels: 1
+  
+  # Example of a second stream (uncomment to use)
+  # - name: "south-mic"
+  #   url: "rtsp://localhost:8554/birdmic-south"
+  #   sample_rate: 48000
+  #   window_size_seconds: 5.0
+  #   channels: 1
+
+# Frequency band definitions (in Hz)
+bird_band:
+  low: 2000   # Most bird calls are above 2 kHz
+  high: 9000  # Upper limit of typical bird vocalizations
+
+low_band:
+  low: 20     # Sub-bass
+  high: 500   # Traffic rumble, HVAC, wind noise
+
+# Gating thresholds
+gating:
+  # Minimum overall RMS level (in dB) to consider non-silence
+  # Samples below this are marked SILENCE and not analyzed
+  min_overall_rms_db: -50.0
+  
+  # Minimum bird-band SNR (in dB) to send to BirdNET
+  # This is: RMS(bird_band) - RMS(low_band)
+  # Higher values = more selective (fewer false triggers from traffic)
+  min_bird_snr_db: 6.0
+
+# BirdNET configuration
+birdnet:
+  # Mode: "http" for BirdNET-Go API, "cli" for BirdNET-Analyzer
+  mode: "http"
+  
+  # HTTP mode settings (for BirdNET-Go)
+  http_url: "http://localhost:8080/analyze"
+  http_timeout: 30.0
+  
+  # CLI mode settings (for BirdNET-Analyzer)
+  # cli_path: "python -m birdnet_analyzer"
+  # cli_model_path: null
+  
+  # Location for species filtering (Seattle area)
+  latitude: 47.68
+  longitude: -122.39
+  
+  # Minimum confidence threshold for detections
+  min_confidence: 0.25
+  
+  # Maximum number of species to return per window
+  top_n: 5
+
+# Storage configuration
+storage:
+  # Backend: "sqlite" or "jsonl"
+  backend: "sqlite"
+  
+  # Path to storage file
+  path: "birdgate.db"
+
+# Reconnection settings for stream failures
+reconnect_delay_seconds: 5.0
+max_reconnect_delay_seconds: 60.0
